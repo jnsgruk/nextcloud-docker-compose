@@ -36,4 +36,12 @@ services:
       - "traefik.http.routers.code-https.rule=Host(`office.somedomain.com`)"
       - "traefik.http.routers.code-https.tls.certresolver=myhttpchallenge"
       - "traefik.http.routers.code-https.tls=true"
+      ## Redirect away from root URL
+      - "traefik.http.routers.code-root.rule=(Host(`office.jnsgr.uk`) && Path(`/`))"
+      - "traefik.http.routers.code-root.entrypoints=websecure,web"
+      - "traefik.http.routers.code-root.tls=true"
+      - "traefik.http.routers.code-root.service=nc-app-nextcloud"
+      - "traefik.http.middlewares.code-root.redirectregex.regex=^(.*)"
+      - "traefik.http.middlewares.code-root.redirectregex.replacement=https://cloud.jnsgr.uk/"
+      - "traefik.http.middlewares.code-root.redirectregex.permanent=true"
 
