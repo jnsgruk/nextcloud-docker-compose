@@ -2,6 +2,8 @@
 
 This repo contains the config files to stand up an instance of Traefik for reverse proxying onto Nextcloud and Collabora Online. All of the docker-compose files in this repo could easily be combined into one - they are seperated only for ease of reading and in the odd cases where not all of the services may be deployed at once.
 
+Traefik will be automatically configured to redirect all domains to HTTPs, and all certs will be automatically created with LetsEncrypt (provided the relevant DNS records are in place).
+
 This repo assumes the following directory structure is present on the deployment host:
 
 ```bash
