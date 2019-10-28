@@ -1,0 +1,39 @@
+version: "3"
+
+networks:
+  proxy:
+    external: true
+
+services:
+  code:
+    image: collabora/code
+    container_name: code
+    networks:
+      - proxy
+    cap_add:
+      - MKNOD
+    environment:
+      - "username=admin"
+      - "password=some_secure_password"
+      - "domain=cloud\\.somedomain\\.com" # NOTE: This is the Nextcloud domain!
+      - "server_name=office.somedomain.com"
+      - "DONT_GEN_SSL_CERT=true"
+      - "extra_params=-o:ssl.enable=false --o:ssl.termination=true 
+--o:storage.wopi.host[0]=::ffff:[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+
+--o:net.post_allow.host[0]=::ffff:[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+ 
+--o:storage.wopi.host[1]=[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+
+--o:net.post_allow.host[1]=[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+ 
+--o:storage.wopi.host[2]=cloud.somedomain.com 
+--o:storage.wopi.host[3]=office.somedomain.com"
+    expose:
+      - 9980
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.code-http.entrypoints=web"
+      - "traefik.http.routers.code-http.rule=Host(`office.somedomain.com`)"
+      - "traefik.http.routers.code-http.middlewares=https-redirect@docker"
+      - "traefik.http.routers.code-https.entrypoints=websecure"
+      - "traefik.http.routers.code-https.rule=Host(`office.somedomain.com`)"
+      - "traefik.http.routers.code-https.tls.certresolver=myhttpchallenge"
+      - "traefik.http.routers.code-https.tls=true"
+
