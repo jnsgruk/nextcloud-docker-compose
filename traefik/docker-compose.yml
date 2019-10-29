@@ -3,14 +3,30 @@ version: "3"
 networks:
   proxy:
     external: true
+  socket_net:
 
 services:
+  # This is used so that Traefik doesn't mount the Docker socket directly!
+  socket-proxy:
+    image: tecnativa/docker-socket-proxy
+    container_name: socket-proxy
+    privileged: yes
+    environment:
+      - CONTAINERS=1
+    expose:
+      - 2375
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - socket_net
+
   proxy:
     image: traefik:v2.0
     container_name: traefik
     command:
       - "--api.dashboard=true"
       - "--providers.docker=true"
+      - "--providers.docker.endpoint=tcp://socket-proxy:2375"
       - "--providers.docker.network=proxy"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
@@ -40,6 +56,6 @@ services:
       - "traefik.http.routers.traefik-https.service=api@internal"
     volumes:
       - /opt/services/state/traefik/letsencrypt:/letsencrypt
-      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - proxy
+      - socket_net
