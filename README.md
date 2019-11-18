@@ -46,6 +46,20 @@ $ docker-compose up -d
 $ docker-compose exec -u www-data nc-app /bin/bash -c '/var/www/html/occ config:system:set overwriteprotocol --value "https"'
 ```
 
+As an aside, the background jobs normally executed by nextcloud with cron will not work by default with this setup. One way around this is to setup a cronjob on the *host* machines as follows:
+
+```
+*/10 * * * * docker exec -u www-data nc-app php -f /var/www/html/cron.php
+```
+
+You may also need to define a trusted proxy in the nextcloud `config.php` which will be found in `<state_dir>/nextcloud/app/config/config.php`. Trusted proxies are defined like so:
+
+```
+//...
+'trusted_proxies' => ['172.20.0.4'],
+//...
+```
+
 #### Deploy Collabora
 
 As above, be sure to replace all instances of the domain names in the `collabora/docker-compose.yml` file before deploying.
