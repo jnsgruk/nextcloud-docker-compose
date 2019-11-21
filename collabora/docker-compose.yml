@@ -44,4 +44,5 @@ services:
       - "traefik.http.middlewares.code-root.redirectregex.regex=^(.*)"
       - "traefik.http.middlewares.code-root.redirectregex.replacement=https://cloud.jnsgr.uk/"
       - "traefik.http.middlewares.code-root.redirectregex.permanent=true"
+    restart: always
 

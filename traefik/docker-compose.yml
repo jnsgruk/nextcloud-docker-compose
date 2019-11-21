@@ -19,6 +19,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - socket_net
+    restart: always
 
   proxy:
     image: traefik:v2.0
@@ -59,3 +60,4 @@ services:
     networks:
       - proxy
       - socket_net
+    restart: always
