@@ -46,6 +46,7 @@ services:
       - "traefik.http.middlewares.nc-rep.redirectregex.replacement=https://$$1/remote.php/dav/"
       - "traefik.http.middlewares.nc-rep.redirectregex.permanent=true"
       - "traefik.http.middlewares.nc-header.headers.customFrameOptionsValue=SAMEORIGIN"
+      - "traefik.http.middlewares.nc-header.headers.stsSeconds=15552000"
     restart: unless-stopped
 
   nc-redis:
