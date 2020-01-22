@@ -1,0 +1,36 @@
+version: "3"
+
+networks:
+  proxy:
+    external: true
+
+services:
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    container_name: onlyoffice
+    networks:
+      - proxy
+    expose:
+      - 80
+      - 443
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.onlyoffice-http.rule=Host(`office.somedomain.com`)"
+      - "traefik.http.routers.onlyoffice-http.entrypoints=web"
+      - "traefik.http.routers.onlyoffice-http.middlewares=https-redirect@docker"
+      - "traefik.http.routers.onlyoffice-https.rule=Host(`office.somedomain.com`)"
+      - "traefik.http.routers.onlyoffice-https.entrypoints=websecure"
+      - "traefik.http.routers.onlyoffice-https.tls.certresolver=myhttpchallenge"
+      - "traefik.http.routers.onlyoffice-https.tls=true"
+      - "traefik.http.routers.onlyoffice-https.middlewares=onlyoffice-headers@docker"
+      - "traefik.http.routers.onlyoffice-root.rule=(Host(`office.somedomain.com`) && Path(`/`))"
+      - "traefik.http.routers.onlyoffice-root.entrypoints=websecure,web"
+      - "traefik.http.routers.onlyoffice-root.tls=true"
+      - "traefik.http.routers.onlyoffice-root.service=nc-app-nextcloud"
+      - "traefik.http.routers.onlyoffice-root.middlewares=onlyoffice-root@docker"
+      - "traefik.http.middlewares.onlyoffice-root.redirectregex.regex=^(.*)"
+      - "traefik.http.middlewares.onlyoffice-root.redirectregex.replacement=https://cloud.somedomain.com/"
+      - "traefik.http.middlewares.onlyoffice-root.redirectregex.permanent=true"
+      - "traefik.http.middlewares.onlyoffice-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+    restart: always
+
