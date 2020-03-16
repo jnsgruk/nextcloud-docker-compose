@@ -13,6 +13,7 @@ This repo assumes the following directory structure is present on the deployment
       /onlyoffice
       /nextcloud
       /traefik
+      /pastebin
     /state
       /onlyoffice
       /nextcloud
@@ -46,7 +47,7 @@ $ docker-compose up -d
 $ docker-compose exec -u www-data nc-app /bin/bash -c '/var/www/html/occ config:system:set overwriteprotocol --value "https"'
 ```
 
-As an aside, the background jobs normally executed by nextcloud with cron will not work by default with this setup. One way around this is to setup a cronjob on the *host* machines as follows:
+As an aside, the background jobs normally executed by nextcloud with cron will not work by default with this setup. One way around this is to setup a cronjob on the _host_ machines as follows:
 
 ```
 */10 * * * * docker exec -u www-data nc-app php -f /var/www/html/cron.php
@@ -70,3 +71,12 @@ $ docker-compose up -d
 ```
 
 NextCloud will then need to have the Collabora Online app and installed, and endpoint set as per your config.
+
+#### Deploy Pastebin
+
+As above, be sure to replace all instances of the domain names in the `pastebin/docker-compose.yml` file before deploying.
+
+```bash
+$ cd pastebin/
+$ docker-compose up -d
+```
