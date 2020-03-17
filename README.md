@@ -1,4 +1,4 @@
-### Traefik/Nextcloud/Collabora with Docker Compose
+### Traefik/Nextcloud/Onlyoffice with Docker Compose
 
 This repo contains the config files to stand up an instance of Traefik for reverse proxying onto Nextcloud and OnlyOffice Document Server. All of the docker-compose files in this repo could easily be combined into one - they are seperated only for ease of reading and in the odd cases where not all of the services may be deployed at once.
 
@@ -17,7 +17,6 @@ This repo assumes the following directory structure is present on the deployment
       /traefik
       /pastebin
     /state
-      /onlyoffice
       /nextcloud
       /traefik
 ```
@@ -65,14 +64,14 @@ You may also need to define a trusted proxy in the nextcloud `config.php` which 
 
 #### Deploy OnlyOffice
 
-As above, be sure to replace all instances of the domain names in the `collabora/docker-compose.yml` file before deploying.
+As above, be sure to replace all instances of the domain names in the `onlyoffice/docker-compose.yml` file before deploying.
 
 ```bash
 $ cd onlyoffice/
 $ docker-compose up -d
 ```
 
-NextCloud will then need to have the Collabora Online app and installed, and endpoint set as per your config.
+NextCloud will then need to have the ONLYOFFICE app and installed, and endpoint set as per your config.
 
 #### Deploy Pastebin
 
