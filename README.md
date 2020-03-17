@@ -80,3 +80,12 @@ As above, be sure to replace all instances of the domain names in the `pastebin/
 $ cd pastebin/
 $ docker-compose up -d
 ```
+
+#### Deploy Watchtower
+
+Watchtower will check on a schedule (02:00 every day) for new containers and automatically update them, removing any old container images from the host.
+
+```bash
+$ cd watchtower/
+$ docker-compose up -d
+```
