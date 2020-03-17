@@ -4,6 +4,8 @@ This repo contains the config files to stand up an instance of Traefik for rever
 
 Traefik will be automatically configured to redirect all domains to HTTPs, and all certs will be automatically created with LetsEncrypt (provided the relevant DNS records are in place).
 
+Additionally, `containrrr/watchtower` can be deployed to automatically update containers as they become available.
+
 This repo assumes the following directory structure is present on the deployment host:
 
 ```bash
