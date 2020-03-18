@@ -1,0 +1,37 @@
+version: "2"
+
+networks:
+  proxy:
+    external: true
+
+services:
+  nginx:
+    image: linuxserver/nginx
+    container_name: jnsgr.uk
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    networks:
+      - proxy
+    volumes:
+      - /opt/services/state/jnsgr.uk:/config
+    expose:
+      - 80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jnsgruk-http.rule=Host(`jnsgr.uk`)"
+      - "traefik.http.routers.jnsgruk-http.entrypoints=web"
+      - "traefik.http.routers.jnsgruk-http.middlewares=https-redirect@docker"
+      - "traefik.http.routers.jnsgruk-https.rule=Host(`jnsgr.uk`)"
+      - "traefik.http.routers.jnsgruk-https.entrypoints=websecure"
+      - "traefik.http.routers.jnsgruk-https.tls.certresolver=myhttpchallenge"
+      - "traefik.http.routers.jnsgruk-https.tls=true"
+      - "traefik.http.routers.jnsgruk-www.rule=Host(`www.jnsgr.uk`)"
+      - "traefik.http.routers.jnsgruk-www.entrypoints=websecure,web"
+      - "traefik.http.routers.jnsgruk-www.tls=true"
+      - "traefik.http.routers.jnsgruk-www.middlewares=jnsgruk-www@docker"
+      - "traefik.http.middlewares.jnsgruk-www.redirectregex.regex=^(.*)"
+      - "traefik.http.middlewares.jnsgruk-www.redirectregex.replacement=https://jnsgr.uk/"
+      - "traefik.http.middlewares.jnsgruk-www.redirectregex.permanent=true"
+    restart: unless-stopped
