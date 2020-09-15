@@ -53,6 +53,8 @@ services:
     image: redis
     container_name: nc-redis
     restart: always
+    networks:
+      - internal
 
   nc-db:
     image: mariadb
