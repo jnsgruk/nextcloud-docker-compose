@@ -8,7 +8,8 @@ networks:
 
 services:
   nc-app:
-    image: nextcloud:latest
+    build: .
+    image: nextcloud-jnsgruk:latest
     container_name: nc-app
     networks:
       - proxy
@@ -52,6 +53,8 @@ services:
   nc-redis:
     image: redis
     container_name: nc-redis
+    # Replace the password
+    command: ["redis-server", "--requirepass", "SUPERSECRET", "--appendonly", "yes"]
     restart: always
     networks:
       - internal
@@ -59,7 +62,7 @@ services:
   nc-db:
     image: mariadb
     container_name: nc-db
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    command: --transaction-isolation=READ-COMMITTED --log-bin=mysqld-bin --binlog-format=ROW --innodb=on
     # THESE CAN BE USED TO AUTOCONFIGURE IF BUILDING FROM SCRATCH
     # environment:
     # - MYSQL_ROOT_PASSWORD=secure_password

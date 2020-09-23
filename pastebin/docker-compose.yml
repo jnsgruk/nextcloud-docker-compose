@@ -19,7 +19,7 @@ services:
       - "traefik.http.routers.bin-http.rule=Host(`bin.somedomain.com`)"
       - "traefik.http.routers.bin-http.entrypoints=web"
       - "traefik.http.routers.bin-http.middlewares=https-redirect@docker"
-      - "traefik.http.routers.bin-https.rule=Host(`bin.somedomain.co`)"
+      - "traefik.http.routers.bin-https.rule=Host(`bin.somedomain.com`)"
       - "traefik.http.routers.bin-https.entrypoints=websecure"
       - "traefik.http.routers.bin-https.tls.certresolver=myhttpchallenge"
       - "traefik.http.routers.bin-https.tls=true"

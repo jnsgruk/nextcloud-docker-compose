@@ -25,7 +25,7 @@ This repo assumes the following directory structure is present on the deployment
 
 Deploying Traefik is relatively simple in this case. First, we need to generate some creds for the dashboard (if it'll be used). The following command will generate the creds in the right form (`$` must be double escaped):
 
-```
+```bash
 $ echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g
 ```
 
@@ -50,13 +50,13 @@ $ docker-compose exec -u www-data nc-app /bin/bash -c '/var/www/html/occ config:
 
 As an aside, the background jobs normally executed by nextcloud with cron will not work by default with this setup. One way around this is to setup a cronjob on the _host_ machines as follows:
 
-```
+```bash
 */10 * * * * docker exec -u www-data nc-app php -f /var/www/html/cron.php
 ```
 
 You may also need to define a trusted proxy in the nextcloud `config.php` which will be found in `<state_dir>/nextcloud/app/config/config.php`. Trusted proxies are defined like so:
 
-```
+```php
 //...
 'trusted_proxies' => ['172.20.0.4'],
 //...
