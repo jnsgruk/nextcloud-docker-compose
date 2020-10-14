@@ -24,19 +24,27 @@ services:
   proxy:
     image: traefik:v2.0
     container_name: traefik
-    command:
-      - "--api.dashboard=true"
-      - "--providers.docker=true"
-      - "--providers.docker.endpoint=tcp://socket-proxy:2375"
-      - "--providers.docker.network=proxy"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myhttpchallenge.acme.httpchallenge=true"
-      - "--certificatesresolvers.myhttpchallenge.acme.httpchallenge.entrypoint=web"
-      # Update this field!
-      - "--certificatesresolvers.myhttpchallenge.acme.email=email@email.com"
-      - "--certificatesresolvers.myhttpchallenge.acme.storage=/letsencrypt/acme.json"
+    entrypoint:
+      - /bin/ash
+      - -c
+      - ip -4 route list match 0/0 | awk '{print $$3" host.docker.internal"}' >> /etc/hosts && traefik traefik
+    environment:
+      TRAEFIK_API: "true"
+      TRAEFIK_API_DASHBOARD: "true"
+      TRAEFIK_PROVIDERS_DOCKER: "true"
+      TRAEFIK_PROVIDERS_DOCKER_ENDPOINT: "tcp://socket-proxy:2375"
+      TRAEFIK_PROVIDERS_DOCKER_NETWORK: "proxy"
+      TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT: "false"
+      TRAEFIK_PROVIDERS_FILE_FILENAME: "/etc/traefik/config.toml"
+      TRAEFIK_PROVIDERS_FILE_WATCH: "true"
+      TRAEFIK_ENTRYPOINTS_web: "true"
+      TRAEFIK_ENTRYPOINTS_web_ADDRESS: ":80"
+      TRAEFIK_ENTRYPOINTS_websecure: "true"
+      TRAEFIK_ENTRYPOINTS_websecure_ADDRESS: ":443"
+      TRAEFIK_CERTIFICATESRESOLVERS_MYHTTPCHALLENGE_ACME_HTTPCHALLENGE: "true"
+      TRAEFIK_CERTIFICATESRESOLVERS_MYHTTPCHALLENGE_ACME_HTTPCHALLENGE_ENTRYPOINT: "web"
+      TRAEFIK_CERTIFICATESRESOLVERS_MYHTTPCHALLENGE_ACME_EMAIL: "jonseager@gmail.com"
+      TRAEFIK_CERTIFICATESRESOLVERS_MYHTTPCHALLENGE_ACME_STORAGE: "/letsencrypt/acme.json"
     ports:
       - 80:80
       - 443:443
@@ -57,6 +65,7 @@ services:
       - "traefik.http.routers.traefik-https.service=api@internal"
     volumes:
       - /opt/services/state/traefik/letsencrypt:/letsencrypt
+      - /opt/services/config/traefik/config.toml:/etc/traefik/config.toml
     networks:
       - proxy
       - socket_net
