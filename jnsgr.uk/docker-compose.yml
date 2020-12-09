@@ -5,27 +5,36 @@ networks:
     external: true
 
 services:
-  nginx:
-    # Requires auth using Github Personal Access Token -  'docker login docker.pkg.github.com'
-    image: docker.pkg.github.com/jnsgruk/jnsgr.uk/jnsgr.uk:0.1
-    container_name: jnsgr.uk
+  jnsgruk:
+    image: docker.pkg.github.com/jnsgruk/jnsgr.uk/jnsgr.uk:0.3
+    container_name: jnsgruk
+    environment:
+      WEBROOT: ./public
+      REDIRECT_MAP_URL: https://gist.githubusercontent.com/jnsgruk/b590f114af1b041eeeab3e7f6e9851b7/raw
     networks:
       - proxy
-    ports:
-      - 8080:80
     labels:
       - "traefik.enable=true"
+      # http://jnsgr.uk
       - "traefik.http.routers.jnsgruk-http.rule=Host(`jnsgr.uk`)"
       - "traefik.http.routers.jnsgruk-http.entrypoints=web"
       - "traefik.http.routers.jnsgruk-http.middlewares=https-redirect@docker"
+      # https://jnsgr.uk
       - "traefik.http.routers.jnsgruk-https.rule=Host(`jnsgr.uk`)"
       - "traefik.http.routers.jnsgruk-https.entrypoints=websecure"
       - "traefik.http.routers.jnsgruk-https.tls.certresolver=myhttpchallenge"
       - "traefik.http.routers.jnsgruk-https.tls=true"
+      # http://www.jnsgr.uk
       - "traefik.http.routers.jnsgruk-www.rule=Host(`www.jnsgr.uk`)"
-      - "traefik.http.routers.jnsgruk-www.entrypoints=websecure,web"
-      - "traefik.http.routers.jnsgruk-www.tls=true"
+      - "traefik.http.routers.jnsgruk-www.entrypoints=web"
       - "traefik.http.routers.jnsgruk-www.middlewares=jnsgruk-www@docker"
+      # https://www.jnsgr.uk
+      - "traefik.http.routers.jnsgruk-www-https.rule=Host(`www.jnsgr.uk`)"
+      - "traefik.http.routers.jnsgruk-www-https.entrypoints=websecure"
+      - "traefik.http.routers.jnsgruk-www-https.tls.certresolver=myhttpchallenge"
+      - "traefik.http.routers.jnsgruk-www-https.tls=true"
+      - "traefik.http.routers.jnsgruk-www-https.middlewares=jnsgruk-www@docker"
+      # Redirect www.jnsgr.uk -> jnsgr.uk
       - "traefik.http.middlewares.jnsgruk-www.redirectregex.regex=^(.*)"
       - "traefik.http.middlewares.jnsgruk-www.redirectregex.replacement=https://jnsgr.uk/"
       - "traefik.http.middlewares.jnsgruk-www.redirectregex.permanent=true"
