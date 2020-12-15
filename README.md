@@ -1,3 +1,7 @@
+### Warning
+
+This repo is now essentially unmaintained, I am now using my [infra](https://github.com/jnsgruk/infra) repository for this task, but have left this as a reference in case it is of any use.
+
 ### Traefik/Nextcloud/Onlyoffice with Docker Compose
 
 This repo contains the config files to stand up an instance of Traefik for reverse proxying onto Nextcloud and OnlyOffice Document Server. All of the docker-compose files in this repo could easily be combined into one - they are seperated only for ease of reading and in the odd cases where not all of the services may be deployed at once.
